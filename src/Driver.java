@@ -1,29 +1,39 @@
-class Driver {
+public class Driver {
     public static void main(String[] args) {
-        Account[] acc = new Account[3];
-        acc[0] = new Account("John Doe", 1000);
-        acc[1] = new Account("Jane Smith", 2000);
-        acc[2] = new Account("Alice Johnson", 3000);
+        Account[] accounts = new Account[3];
+        accounts[0] = new Account("Alice", 5000);
+        accounts[1] = new Account("Bob", 3000);
+        accounts[2] = new Account(accounts[0].getAccountNumber(), "Alice Clone", 5000, true);
 
-        for (Account account : acc) {
-            System.out.println("Account Number: " + account.getAccountNumber());
-            System.out.println("Owner Name: " + account.getOwnerName());
-            System.out.println("Balance: " + account.getBalance());
-            System.out.println("Active: " + account.isActive());
-            System.out.println();
+        for (Account acc : accounts) {
+            System.out.println(acc.toString());
         }
 
-        //deposits and withdrawals
-        acc[0].deposit(500);
-        acc[1].withdraw(1000);
-        acc[2].deposit(1500);
+        accounts[0].deposit(1000);
+        accounts[1].withdraw(500);
 
-        for (Account account : acc) {
-            System.out.println("Account Number: " + account.getAccountNumber());
-            System.out.println("Owner Name: " + account.getOwnerName());
-            System.out.println("Balance: " + account.getBalance());
-            System.out.println("Active: " + account.isActive());
-            System.out.println();
+        System.out.println("After transactions:");
+        System.out.println("Account 0: " + accounts[0]);
+        System.out.println("Account 1: " + accounts[1]);
+
+        boolean sameAccount = accounts[0].equals(accounts[2]);
+        System.out.println("accounts[0].equals(accounts[2]): " + sameAccount);
+
+        boolean diffAccount = accounts[0].equals(accounts[1]);
+        System.out.println("accounts[0].equals(accounts[1]): " + diffAccount);
+
+        Object obj = accounts[0];
+        if (obj instanceof Account) {
+            System.out.println("Verified object is an instance of Account");
         }
+
+        Customer customer = new Customer("Charlie", "charlie@example.com", "9876543210");
+        Customer.Address addr = new Customer.Address("123 Main St", "Ahmedabad", "380001");
+        customer.setAddress(addr);
+
+        System.out.println("Original customer: " + customer);
+        Customer clonedCustomer = customer.clone();
+        System.out.println("Cloned customer: " + clonedCustomer);
+        System.out.println("Customer clone equality check: " + (customer != clonedCustomer));
     }
 }
