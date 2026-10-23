@@ -1,5 +1,9 @@
 package model;
 
+import exception.AccountNotFoundException;
+import exception.BankException;
+import exception.InsufficientFundsException;
+import exception.InvalidAmountException;
 import model.annotation.Id;
 import model.annotation.Positive;
 
@@ -41,21 +45,49 @@ public abstract class Account implements Transactable, InterestBearing {
     public abstract boolean canWithdraw(long amount);
 
     @Override
-    public void deposit(long amount) {
-        if (amount > 0) {
-            balance += amount;
-        } else {
-            System.out.println("Deposit amount must be positive.");
+    public void deposit(long amount) throws InvalidAmountException {
+        if (amount <= 0) {
+            throw new InvalidAmountException("Deposit amount must be positive: " + amount);
         }
+        balance += amount;
     }
 
     @Override
-    public boolean withdraw(long amount) {
-        if (amount > 0 && canWithdraw(amount)) {
-            balance -= amount;
-            return true;
+    public boolean withdraw(long amount) throws InsufficientFundsException, InvalidAmountException {
+        if (amount <= 0) {
+            throw new InvalidAmountException("Withdrawal amount must be positive: " + amount);
         }
-        return false;
+        if (!canWithdraw(amount)) {
+            long shortfall = amount - balance;
+            if (shortfall < 0) {
+                shortfall = 0;
+            }
+            throw new InsufficientFundsException("Insufficient funds for withdrawal. Balance: " + balance + ", Requested: " + amount, shortfall);
+        }
+        balance -= amount;
+        return true;
+    }
+
+    public void transfer(Account to, long amount) throws BankException {
+        if (to == null) {
+            throw new AccountNotFoundException("Destination account not found");
+        }
+        boolean withdrawn = false;
+        try {
+            withdraw(amount);
+            withdrawn = true;
+            to.deposit(amount);
+        } catch (BankException e) {
+            if (withdrawn) {
+                try {
+                    deposit(amount);
+                } catch (InvalidAmountException ignored) {
+                }
+            }
+            throw e;
+        } finally {
+            System.out.println("Transfer operation from " + getAccountNumber() + " to " + to.getAccountNumber() + " finalized.");
+        }
     }
 
     public String getAccountNumber() {
