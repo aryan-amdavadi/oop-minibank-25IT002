@@ -4,10 +4,13 @@ import exception.AccountNotFoundException;
 import exception.BankException;
 import exception.InsufficientFundsException;
 import exception.InvalidAmountException;
+import java.io.Serializable;
 import model.annotation.Id;
 import model.annotation.Positive;
 
-public abstract class Account implements Transactable, InterestBearing {
+public abstract class Account implements Transactable, InterestBearing, Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     private final String accountNumber;
     private String ownerName;
