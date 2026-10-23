@@ -1,4 +1,6 @@
-public abstract class Account {
+package model;
+
+public abstract class Account implements Transactable, InterestBearing {
     private final String accountNumber;
     private String ownerName;
     private long balance;
