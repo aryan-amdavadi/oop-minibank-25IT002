@@ -1,4 +1,4 @@
-public class Account {
+public abstract class Account {
     private final String accountNumber;
     private String ownerName;
     private long balance;
@@ -28,6 +28,10 @@ public class Account {
         this.active = active;
     }
 
+    public abstract double interestRate();
+
+    public abstract boolean canWithdraw(long amount);
+
     public void deposit(long amount) {
         if (amount > 0) {
             balance += amount;
@@ -37,7 +41,7 @@ public class Account {
     }
 
     public boolean withdraw(long amount) {
-        if (amount > 0 && amount <= balance) {
+        if (amount > 0 && canWithdraw(amount)) {
             balance -= amount;
             return true;
         }
@@ -61,7 +65,7 @@ public class Account {
     }
 
     public String toString() {
-        return "Account[accountNumber=" + accountNumber + ", ownerName=" + ownerName + ", balance=" + balance + ", active=" + active + "]";
+        return getClass().getSimpleName() + "[accountNumber=" + accountNumber + ", ownerName=" + ownerName + ", balance=" + balance + ", active=" + active + "]";
     }
 
     public boolean equals(Object o) {
