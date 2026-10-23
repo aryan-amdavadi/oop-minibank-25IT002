@@ -1,50 +1,36 @@
 package service;
 
 import static java.lang.System.out;
-import exception.BankException;
-import exception.InsufficientFundsException;
-import exception.InvalidAmountException;
+import model.Account;
 import model.SavingsAccount;
-import util.BankSession;
 
 public class Driver {
-    public static void main(String[] args) {
-        SavingsAccount acc1 = new SavingsAccount("Meera", 4000, 1000);
-        SavingsAccount acc2 = new SavingsAccount("Rohan", 2000, 500);
+    public static void main(String[] args) throws InterruptedException {
+        Account account = new SavingsAccount("Shared User", 1000, 500);
+        out.println("Starting balance: " + account.getBalance());
 
-        try {
-            out.println("Attempting valid deposit of Rs. 1000...");
-            acc1.deposit(1000);
-            out.println("New balance: " + acc1.getBalance());
+        int threadCount = 10;
+        int timesPerThread = 1000;
+        long amountPerDeposit = 1;
+        Thread[] threads = new Thread[threadCount];
 
-            out.println("Attempting invalid deposit of -500...");
-            acc1.deposit(-500);
-        } catch (InvalidAmountException e) {
-            out.println("Caught InvalidAmountException: " + e.getMessage());
+        for (int i = 0; i < threadCount; i++) {
+            threads[i] = new Thread(new AccountWorker(account, timesPerThread, amountPerDeposit), "DepositWorker-" + (i + 1));
+            out.println("Created thread: " + threads[i].getName() + " with state: " + threads[i].getState());
         }
 
-        try {
-            out.println("Attempting withdrawal of Rs. 7000 (exceeds balance)...");
-            acc1.withdraw(7000);
-        } catch (InsufficientFundsException e) {
-            out.println("Caught InsufficientFundsException: " + e.getMessage());
-            out.println("Reported shortfall: Rs. " + e.getShortfall());
-        } catch (InvalidAmountException e) {
-            out.println("Caught InvalidAmountException: " + e.getMessage());
+        for (int i = 0; i < threadCount; i++) {
+            threads[i].start();
         }
 
-        try {
-            out.println("Attempting valid transfer of Rs. 1500 from acc1 to acc2...");
-            acc1.transfer(acc2, 1500);
-            out.println("acc1 balance: " + acc1.getBalance() + ", acc2 balance: " + acc2.getBalance());
-        } catch (BankException e) {
-            out.println("Transfer failed: " + e.getMessage());
-        } finally {
-            out.println("End of transaction testing block.");
+        for (int i = 0; i < threadCount; i++) {
+            threads[i].join();
+            out.println("Joined thread: " + threads[i].getName() + " final state: " + threads[i].getState());
         }
 
-        try (BankSession session = new BankSession("Meera")) {
-            session.execute("Check balance for " + acc1.getAccountNumber());
-        }
+        long expectedBalance = 1000 + (threadCount * timesPerThread * amountPerDeposit);
+        out.println("Final Account Balance: " + account.getBalance());
+        out.println("Expected Balance: " + expectedBalance);
+        out.println("Thread synchronization verified: " + (account.getBalance() == expectedBalance));
     }
 }
