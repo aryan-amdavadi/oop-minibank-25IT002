@@ -1,11 +1,13 @@
 package model;
 
 import java.io.Serializable;
+import model.annotation.Id;
 import model.annotation.MaxLength;
 
 public class Customer implements Cloneable, Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Id
     private final String customerId;
     @MaxLength(30)
     private String name;
