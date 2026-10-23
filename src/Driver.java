@@ -1,39 +1,27 @@
 public class Driver {
     public static void main(String[] args) {
-        Account[] accounts = new Account[3];
-        accounts[0] = new Account("Alice", 5000);
-        accounts[1] = new Account("Bob", 3000);
-        accounts[2] = new Account(accounts[0].getAccountNumber(), "Alice Clone", 5000, true);
+        System.out.println("Valid Mobile (9876543210): " + Validator.isValidMobile("9876543210"));
+        System.out.println("Invalid Mobile (12345): " + Validator.isValidMobile("12345"));
 
-        for (Account acc : accounts) {
-            System.out.println(acc.toString());
+        System.out.println("Valid Email (user@bank.com): " + Validator.isValidEmail("user@bank.com"));
+        System.out.println("Invalid Email (user@): " + Validator.isValidEmail("user@"));
+
+        System.out.println("Valid PAN (ABCDE1234F): " + Validator.isValidPan("ABCDE1234F"));
+        System.out.println("Invalid PAN (12345ABCDE): " + Validator.isValidPan("12345ABCDE"));
+
+        System.out.println("Valid IFSC (HDFC0001234): " + Validator.isValidIfsc("HDFC0001234"));
+        System.out.println("Invalid IFSC (HDFC123): " + Validator.isValidIfsc("HDFC123"));
+
+        String inputCommand = "DEPOSIT AC0001 500";
+        Command command = CommandParser.parse(inputCommand);
+        if (command != null) {
+            System.out.println("Command Type: " + command.type());
+            System.out.println("Command Account Number: " + command.accountNumber());
+            System.out.println("Command Amount: " + command.amount());
         }
 
-        accounts[0].deposit(1000);
-        accounts[1].withdraw(500);
-
-        System.out.println("After transactions:");
-        System.out.println("Account 0: " + accounts[0]);
-        System.out.println("Account 1: " + accounts[1]);
-
-        boolean sameAccount = accounts[0].equals(accounts[2]);
-        System.out.println("accounts[0].equals(accounts[2]): " + sameAccount);
-
-        boolean diffAccount = accounts[0].equals(accounts[1]);
-        System.out.println("accounts[0].equals(accounts[1]): " + diffAccount);
-
-        Object obj = accounts[0];
-        if (obj instanceof Account) {
-            System.out.println("Verified object is an instance of Account");
-        }
-
-        Customer customer = new Customer("Charlie", "charlie@example.com", "9876543210");
-        Customer.Address addr = new Customer.Address("123 Main St", "Ahmedabad", "380001");
-        customer.setAddress(addr);
-
-        System.out.println("Original customer: " + customer);
-        Customer clonedCustomer = customer.clone();
-        System.out.println("Cloned customer: " + clonedCustomer);
-        System.out.println("Customer clone equality check: " + (customer != clonedCustomer));
+        Account account = new Account("Pooja Shah", 12500);
+        String statement = StatementFormatter.buildStatement(account);
+        System.out.println(statement);
     }
 }
