@@ -9,10 +9,12 @@ public class FixedDepositAccount extends Account {
         super(accountNumber, ownerName, balance, active);
     }
 
+    @Override
     public double interestRate() {
         return 7.0;
     }
 
+    @Override
     public boolean canWithdraw(long amount) {
         return false;
     }

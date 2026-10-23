@@ -3,31 +3,20 @@ package service;
 import static java.lang.System.out;
 import model.Account;
 import model.SavingsAccount;
-import model.CurrentAccount;
-import model.FixedDepositAccount;
-import model.WithdrawRule;
+import util.AnnotationValidator;
 
 public class Driver {
     public static void main(String[] args) {
-        SavingsAccount sa = new SavingsAccount("Dev Patel", 20000, 2000);
-        out.println("Savings Account: " + sa);
-        out.println("Yearly Interest: Rs. " + sa.yearlyInterest());
+        Account invalidAccount = new SavingsAccount("Invalid User", -1500, 1000);
+        out.println("Validating invalid account with negative balance:");
+        String[] errors = AnnotationValidator.validate(invalidAccount);
+        for (String err : errors) {
+            out.println("Error: " + err);
+        }
 
-        WithdrawRule anonRule = new WithdrawRule() {
-            public boolean allow(Account account, long amount) {
-                return account.getBalance() - amount >= 1000;
-            }
-        };
-
-        WithdrawRule lambdaRule = (account, amount) -> account.getBalance() >= amount;
-
-        out.println("Anonymous rule allowed (5000): " + anonRule.allow(sa, 5000));
-        out.println("Lambda rule allowed (25000): " + lambdaRule.allow(sa, 25000));
-
-        sa.deposit(3000);
-        out.println("After deposit balance: " + sa.getBalance());
-        boolean withdrawn = sa.withdraw(5000);
-        out.println("Withdrawal success: " + withdrawn);
-        out.println("Remaining balance: " + sa.getBalance());
+        Account validAccount = new SavingsAccount("Valid User", 5000, 1000);
+        out.println("Validating valid account:");
+        String[] validErrors = AnnotationValidator.validate(validAccount);
+        out.println("Errors count: " + validErrors.length);
     }
 }

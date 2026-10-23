@@ -1,7 +1,10 @@
 package model;
 
+import model.annotation.MaxLength;
+
 public class Customer implements Cloneable {
     private final String customerId;
+    @MaxLength(30)
     private String name;
     private String email;
     private String mobile;
@@ -31,6 +34,7 @@ public class Customer implements Cloneable {
             return pincode;
         }
 
+        @Override
         public String toString() {
             return line + ", " + city + " - " + pincode;
         }
@@ -83,6 +87,7 @@ public class Customer implements Cloneable {
         this.address = address;
     }
 
+    @Override
     public Customer clone() {
         try {
             Customer copy = (Customer) super.clone();
@@ -95,6 +100,7 @@ public class Customer implements Cloneable {
         }
     }
 
+    @Override
     public String toString() {
         return "Customer[customerId=" + customerId + ", name=" + name + ", email=" + email + ", mobile=" + mobile + (address != null ? ", address=" + address : "") + "]";
     }
