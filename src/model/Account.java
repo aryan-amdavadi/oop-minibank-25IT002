@@ -72,21 +72,14 @@ public abstract class Account implements Transactable, InterestBearing {
         if (to == null) {
             throw new AccountNotFoundException("Destination account not found");
         }
-        boolean withdrawn = false;
-        try {
-            withdraw(amount);
-            withdrawn = true;
-            to.deposit(amount);
-        } catch (BankException e) {
-            if (withdrawn) {
-                try {
-                    deposit(amount);
-                } catch (InvalidAmountException ignored) {
-                }
+        Account first = this.accountNumber.compareTo(to.accountNumber) < 0 ? this : to;
+        Account second = first == this ? to : this;
+
+        synchronized (first) {
+            synchronized (second) {
+                this.withdraw(amount);
+                to.deposit(amount);
             }
-            throw e;
-        } finally {
-            System.out.println("Transfer operation from " + getAccountNumber() + " to " + to.getAccountNumber() + " finalized.");
         }
     }
 
