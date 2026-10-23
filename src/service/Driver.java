@@ -1,50 +1,43 @@
 package service;
 
 import static java.lang.System.out;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import model.Account;
-import model.CurrentAccount;
 import model.SavingsAccount;
-import util.ReportGenerator;
-import util.StatePersister;
-import util.TransactionLog;
 
 public class Driver {
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-        Path dataDir = Paths.get("data");
-        Path logsDir = Paths.get("logs");
-        Path stateFile = dataDir.resolve("accounts.dat");
-        Path logFile1 = logsDir.resolve("batch1.log");
-        Path logFile2 = logsDir.resolve("batch2.log");
-        Path reportFile = dataDir.resolve("summary_report.txt");
+    public static void main(String[] args) {
+        AccountStore store = new AccountStore();
 
-        Account[] originalAccounts = new Account[2];
-        originalAccounts[0] = new SavingsAccount("Suresh", 15000, 2000);
-        originalAccounts[1] = new CurrentAccount("Ramesh", 25000, 10000);
+        Account acc1 = new SavingsAccount("User 1", 5000, 500);
+        Account acc2 = new SavingsAccount("User 2", 2000, 500);
+        Account acc3 = new SavingsAccount("User 3", 9000, 500);
 
-        out.println("1. Saving accounts to file: " + stateFile);
-        StatePersister.save(originalAccounts, stateFile);
+        store.add(acc1);
+        store.add(acc2);
+        store.add(acc3);
 
-        out.println("2. Reloading accounts from file...");
-        Account[] reloadedAccounts = StatePersister.load(stateFile);
-        for (Account acc : reloadedAccounts) {
-            out.println("Reloaded: " + acc);
+        out.println("Looking up account by number " + acc2.getAccountNumber() + ":");
+        Account fetched = store.get(acc2.getAccountNumber());
+        out.println("Found: " + fetched);
+
+        out.println("\nAccounts sorted by balance (descending):");
+        ArrayList<Account> sorted = store.sortedByBalance();
+        for (Account a : sorted) {
+            out.println(a.getAccountNumber() + " - " + a.getOwnerName() + " : Rs. " + a.getBalance());
         }
 
-        out.println("\n3. Writing transaction logs...");
-        TransactionLog.append(logFile1, "DEPOSIT AC0001 5000");
-        TransactionLog.append(logFile1, "WITHDRAW AC0001 1000");
-        TransactionLog.append(logFile2, "DEPOSIT AC0002 8000");
-        TransactionLog.append(logFile2, "WITHDRAW AC0002 2500");
+        out.println("\nNatural sorting with Comparable (by account number):");
+        ArrayList<Account> natural = store.getAll();
+        Collections.sort(natural);
+        for (Account a : natural) {
+            out.println(a.getAccountNumber() + " - " + a.getOwnerName());
+        }
 
-        out.println("4. Generating end-of-day summary report...");
-        ReportGenerator.generateReport(logsDir, reportFile);
-
-        out.println("\n--- Report Content ---");
-        String reportContent = Files.readString(reportFile);
-        out.println(reportContent);
+        out.println("\nTransaction History from AccountStore:");
+        for (String record : store.getTransactionHistory()) {
+            out.println(record);
+        }
     }
 }
