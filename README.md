@@ -1,132 +1,149 @@
-# 🏦 Object-Oriented Mini Bank System (oop-minibank-25IT002)
+# Object-Oriented Mini Bank System (oop-minibank-25IT002)
 
-[![GitHub License](https://img.shields.io/github/license/aryan-amdavadi/oop-minibank-25IT002?style=flat-square&color=blue)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/aryan-amdavadi/oop-minibank-25IT002?style=flat-square)](https://github.com/aryan-amdavadi/oop-minibank-25IT002/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/aryan-amdavadi/oop-minibank-25IT002?style=flat-square)](https://github.com/aryan-amdavadi/oop-minibank-25IT002/network/members)
-[![Java Version](https://img.shields.io/badge/Java-17%2B-orange?style=flat-square&logo=java)](https://www.oracle.com/java/)
-
-An elegant, robust, and production-ready **Console-Based Mini Banking Application** engineered using core **Object-Oriented Programming (OOP)** principles in Java. This project simulates a real-world banking ecosystem, showcasing clean code architecture, data encapsulation, inheritance, polymorphism, and abstraction.
+MiniBank is a layered, console-based banking application built in Java following core Object-Oriented Programming (OOP) principles, clean architectural patterns, concurrency controls, custom annotations with reflection, NIO-based persistence, and automated unit testing.
 
 ---
 
-## 🚀 Key Features
+## Architecture & Practical Progression
 
-*   **👥 Multi-Account Type Ecosystem:** Distinct architectures for Savings and Current accounts with specialized interest and penalty calculation models.
-*   **🔒 Secure User Authentication:** Unique account number generation paired with secure PIN/password access controls.
-*   **💸 Real-time Transaction Ledger:** Seamless money deposits, withdrawals, and instant peer-to-peer balance transfers.
-*   **📜 Dynamic Statement Generation:** Real-time generation of transaction receipts and historical transaction logging.
-*   **🛡️ Automated Validation Engines:** Bulletproof input verification to prevent overdraft violations, negative deposits, and unauthorized structural mutations.
+MiniBank has been developed progressively across Practicals 1 to 14 (Part B):
+
+- **Practical 1 (lab-01):** Application shell, BankInfo record, MenuOption enum, and menu loop.
+- **Practical 2 (lab-02):** Core Customer and Account entities with encapsulation and static id generation.
+- **Practical 3 (lab-03):** Account equality and hashing (`equals`/`hashCode`), string representation (`toString`), nested `Address` class, and cloning.
+- **Practical 4 (lab-04):** Regular expression validation (`Validator` for mobile, email, PAN, IFSC), Command parser, and StringBuilder statement formatter.
+- **Practical 5 (lab-05):** Polymorphic account hierarchy with abstract `Account` and concrete subtypes `SavingsAccount`, `CurrentAccount`, and `FixedDepositAccount`.
+- **Practical 6 (lab-06):** Interface decoupling (`Transactable`, `InterestBearing`, `WithdrawRule`, `Premium`), package restructuring (`model`, `util`, `service`), and runnable JAR packaging.
+- **Practical 7 (lab-07):** Custom runtime annotations (`@Id`, `@Positive`, `@MaxLength`) and reflection-based validator (`AnnotationValidator`).
+- **Practical 8 (lab-08):** Custom exception hierarchy (`BankException`, `InsufficientFundsException`, `InvalidAmountException`, `AccountNotFoundException`) and try-with-resources resource management (`BankSession`).
+- **Practical 9 (lab-09):** Multithreading and synchronization against shared account state (`AccountWorker`, `synchronized` blocks and methods).
+- **Practical 10 (lab-10):** Thread pool execution (`TransactionProcessor`), producer-consumer buffer with `wait()` and `notify()`, and deadlock prevention using ordered locking.
+- **Practical 11 (lab-11):** Object serialization persistence (`StatePersister`), transaction logs (`TransactionLog`), and NIO directory stream reporting (`ReportGenerator`).
+- **Practical 12 (lab-12):** Java Collections Framework storage (`AccountStore` backed by `HashMap`), balance sorting via `Comparator`, and `Comparable` natural sorting.
+- **Practical 13 (lab-13):** Reusable generic `Repository<T>` with reflection-based `@Id` extraction, varargs batch saving, and bounded generic calculations.
+- **Practical 14 (lab-14):** Capstone integration (`BankService`), interactive menu wiring, automated persistence across restarts, safe concurrent processing, and JUnit 5 unit tests.
 
 ---
 
-## 🏛️ OOP Architecture Blueprint
-
-This application serves as a textbook showcase of fundamental Object-Oriented Software Engineering:
+## Project Structure
 
 ```
-                  ┌───────────────────────┐
-                  │   «abstract» Account  │
-                  └───────────┬───────────┘
-                              │
-             ┌────────────────┴────────────────┐
-             ▼                                 ▼
-┌─────────────────────────┐       ┌─────────────────────────┐
-│     SavingsAccount      │       │     CurrentAccount      │
-├─────────────────────────┤       ├─────────────────────────┤
-│ - interestRate: double  │       │ - overdraftLimit: double│
-│ + calculateInterest()   │       │ + checkOverdraft()      │
-└─────────────────────────┘       └─────────────────────────┘
-```
-
-*   **Encapsulation:** All sensitive customer data (`balance`, `pin`, `accountNumber`) is strictly isolated using `private` modifiers and safely altered through authenticated public getters and setters.
-*   **Abstraction:** Core financial contracts are generalized within an abstract `Account` base class or interfaces, hiding complex back-end operations from the presentation layer.
-*   **Inheritance:** Reusable operational logic flows effortlessly from the base `Account` entity to specialized child classes like `SavingsAccount` and `CurrentAccount`.
-*   **Polymorphism:** Method overriding rules dynamically route runtime actions (like unique validation parameters or transaction fees) depending on the target account object type.
-
----
-
-## 📂 Project Directory Structure
-
-```text
 oop-minibank-25IT002/
-├── .idea/                  # IDE-specific configurations
-├── src/                    # Source directory containing pure Java logic
-│   └── java/               # Core application modules (Models, Services, App Main)
-├── .gitignore              # Standard version control exclusion definitions
-└── oop-minibank-25IT002.iml# IntelliJ project architectural module
+├── bin/                       # Compiled class files
+├── lib/
+│   └── junit-platform-console-standalone.jar
+├── src/
+│   ├── exception/
+│   │   ├── AccountNotFoundException.java
+│   │   ├── BankException.java
+│   │   ├── InsufficientFundsException.java
+│   │   └── InvalidAmountException.java
+│   ├── model/
+│   │   ├── annotation/
+│   │   │   ├── Audit.java
+│   │   │   ├── Id.java
+│   │   │   ├── MaxLength.java
+│   │   │   └── Positive.java
+│   │   ├── Account.java
+│   │   ├── Command.java
+│   │   ├── CurrentAccount.java
+│   │   ├── Customer.java
+│   │   ├── FixedDepositAccount.java
+│   │   ├── InterestBearing.java
+│   │   ├── Premium.java
+│   │   ├── SavingsAccount.java
+│   │   ├── Transactable.java
+│   │   ├── TransactionType.java
+│   │   └── WithdrawRule.java
+│   ├── service/
+│   │   ├── AccountStore.java
+│   │   ├── AccountWorker.java
+│   │   ├── BankService.java
+│   │   ├── BankServiceTest.java
+│   │   ├── Driver.java
+│   │   ├── MiniBank.java
+│   │   ├── TransactionProcessor.java
+│   │   └── TransactionQueue.java
+│   └── util/
+│       ├── AnnotationValidator.java
+│       ├── AuditLogger.java
+│       ├── BankSession.java
+│       ├── CommandParser.java
+│       ├── ReportGenerator.java
+│       ├── Repository.java
+│       ├── StatePersister.java
+│       ├── StatementFormatter.java
+│       ├── TransactionLog.java
+│       └── Validator.java
+├── .gitignore
+├── minibank.jar
+└── README.md
 ```
 
 ---
 
-## 🛠️ Installation & Getting Started
+## Build and Execution Guide
 
 ### Prerequisites
-*   **Java Development Kit (JDK) 17** or higher installed. Check via:
-    ```bash
-    java -version
-    ```
-*   An IDE of your choice (**IntelliJ IDEA**, **Eclipse**, or **VS Code**).
+- JDK 17 or higher
+- Git
 
-### Execution Guide
+### 1. Compile the Project
 
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/aryan-amdavadi/oop-minibank-25IT002.git
-   cd oop-minibank-25IT002
-   ```
+```bash
+mkdir -p bin
+javac -cp "lib/*" -d bin $(find src -name "*.java")
+```
 
-2. **Compile the Source Files:**
-   ```bash
-   javac -d bin src/**/*.java
-   ```
+### 2. Run the Interactive Application
 
-3. **Run the Application:**
-   ```bash
-   java -cp bin Main
-   ```
+Run via classpath:
+```bash
+java -cp bin service.MiniBank
+```
 
----
+Or package and run the runnable JAR:
+```bash
+jar cfe minibank.jar service.MiniBank -C bin .
+java -jar minibank.jar
+```
 
-## 💻 System Preview & Interface Flow
+### 3. Run the Unit Tests
 
-```text
-==========================================
-        WELCOME TO THE MINI-BANK          
-==========================================
-1. Create a New Account
-2. Access Existing Account
-3. Exit Application
-------------------------------------------
-Enter choice: 1
+Using the built-in test runner:
+```bash
+java -cp "bin:lib/*" service.BankServiceTest
+```
 
-[System] Creating Account...
-Select Account Type: (1) Savings  (2) Current
-Choice: 1
-Enter Name: John Doe
-Enter Initial Deposit: $500.00
-Set Secure 4-Digit PIN: ****
+Using JUnit Platform Standalone Console:
+```bash
+java -jar lib/junit-platform-console-standalone.jar -cp bin --select-class service.BankServiceTest
+```
 
-[Success] Account successfully generated! 
-[Success] Your unique Account Number is: MB-25IT002-1001
-==========================================
+### 4. Run the Practical Drivers
+
+To test practical-specific components:
+```bash
+java -cp bin service.Driver
 ```
 
 ---
 
-## 🤝 Contributing
+## Version Control Tags
 
-Contributions make the open-source community an amazing place to learn, inspire, and create.
-1. Fork the project.
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4. Push to the branch (`git push origin feature/AmazingFeature`).
-5. Open a Pull Request.
+Each practical milestone is tracked with an official git tag:
 
----
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
----
-*Developed with ❤️ by [aryan-amdavadi](https://github.com/aryan-amdavadi).*
+- `lab-01`: Menu shell and BankInfo record
+- `lab-02`: Account & Customer encapsulation
+- `lab-03`: Equals, hashCode, Address, and Cloneable
+- `lab-04`: Regex validation, Command parsing, and StatementFormatter
+- `lab-05`: Account abstract hierarchy and polymorphism
+- `lab-06`: Interfaces, modular package layout, and runnable JAR
+- `lab-07`: Metadata annotations and reflection validation
+- `lab-08`: Custom checked exceptions and AutoCloseable session
+- `lab-09`: Thread synchronization and race condition mitigation
+- `lab-10`: Thread pool execution, producer-consumer queue, and deadlock avoidance
+- `lab-11`: Object serialization and NIO report generation
+- `lab-12`: Collections framework storage and Comparator sorting
+- `lab-13`: Generic Repository with reflective @Id resolution
+- `lab-14`: Capstone integration, BankService wiring, and JUnit 5 suite

@@ -3,6 +3,7 @@ bin/
 out/
 build/
 *.jar
+!lib/*.jar
 *.dat
 *.log
 data/
